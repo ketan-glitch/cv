@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cv/pages/cv.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -8,8 +9,54 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
+
+  Future<void> _launched;
+  String _phone = '8689814110';
+
+  void launchUrl(url) async{
+
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Future<void> _makePhoneCall(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Future<void> _launchInBrowser(String url) async {
+    if (await canLaunch(url)) {
+      await launch(
+        url,
+        forceSafariVC: false,
+        forceWebView: false,
+        headers: <String, String>{'my_header_key': 'my_header_value'},
+      );
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+  Widget _launchStatus(BuildContext context, AsyncSnapshot<void> snapshot) {
+    if (snapshot.hasError) {
+      return Text('Error: ${snapshot.error}');
+    } else {
+      return const Text('');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    const String faceBookUrl = 'https://www.facebook.com/Keyy007';
+    const String instaGramUrl = 'https://www.instagram.com/i_m_ktn';
+    const String whatsAppUrl = 'https://wa.me/918689814110?text=Hello';
+    const String twitterUrl = 'https://www.twitter.com/ketan0073';
+    const String gitHubUrl = 'https://github.com/ketan-glitch';
     return Scaffold(
       backgroundColor: Colors.grey[900],
         appBar: AppBar(
@@ -79,7 +126,9 @@ class _HomeState extends State<Home> {
                     children: <Widget>[
                       FlatButton.icon(
                         onPressed: (){
-                          print('phone');
+                          setState(() {
+                            _launched=_makePhoneCall('tel:$_phone');
+                          });
                         },
                         icon: Icon(
                           Icons.phone,
@@ -102,7 +151,7 @@ class _HomeState extends State<Home> {
                     children: <Widget>[
                       FlatButton.icon(
                         onPressed: (){
-                          print('email_id');
+
                         },
                         icon: Icon(
                           Icons.alternate_email,
@@ -129,7 +178,9 @@ class _HomeState extends State<Home> {
                           color: Colors.green,
                         ),
                         onPressed: (){
-                          print('WhatsApp');
+                          setState(() {
+                            _launched=_launchInBrowser(whatsAppUrl);
+                          });
                         },
                       ),
                       IconButton(
@@ -138,7 +189,9 @@ class _HomeState extends State<Home> {
                           color: Colors.blue,
                         ),
                         onPressed: (){
-                          print('Facebook');
+                          setState(() {
+                            _launched=_launchInBrowser(faceBookUrl);
+                          });
                         },
                       ),
                       IconButton(
@@ -147,7 +200,31 @@ class _HomeState extends State<Home> {
                           color: Colors.red,
                         ),
                         onPressed: (){
-                          print('Instagram');
+                          setState(() {
+                            _launched=_launchInBrowser(instaGramUrl);
+                          });
+                        },
+                      ),
+                      IconButton(
+                        icon: FaIcon(
+                          FontAwesomeIcons.twitter,
+                          color: Colors.blue,
+                        ),
+                        onPressed: (){
+                          setState(() {
+                            _launched=_launchInBrowser(twitterUrl);
+                          });
+                        },
+                      ),
+                      IconButton(
+                        icon: FaIcon(
+                          FontAwesomeIcons.github,
+                          color: Colors.white,
+                        ),
+                        onPressed: (){
+                          setState(() {
+                            _launched=_launchInBrowser(gitHubUrl);
+                          });
                         },
                       ),
                     ],
@@ -169,9 +246,12 @@ class _HomeState extends State<Home> {
                   ),
                 ),
               ),
+              FutureBuilder<void>(future: _launched, builder: _launchStatus),
             ],
           ),
         ),
     );
   }
+
+
 }
