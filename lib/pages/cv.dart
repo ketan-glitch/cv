@@ -112,7 +112,9 @@ class _CVState extends State<CV> {
                 child: TextField(
                     onChanged: (String text) => _phone = text,
                     decoration: const InputDecoration(
-                        hintText: 'Input the phone number to launch')),
+                      hintText: 'Input the phone number to launch'
+                    )
+                ),
               ),
               RaisedButton(
                 onPressed: () => setState(() {
