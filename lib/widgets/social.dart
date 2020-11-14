@@ -10,9 +10,18 @@ class Social extends StatefulWidget {
 class _SocialState extends State<Social> {
 
   Future<void> _launched;
+  String _phone = '8689814110';
 
   void launchUrl(url) async{
 
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Future<void> _makePhoneCall(String url) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -37,10 +46,11 @@ class _SocialState extends State<Social> {
   @override
   Widget build(BuildContext context) {
     const String faceBookUrl = 'https://www.facebook.com/Keyy007';
-    const String instaGramUrl = 'https://www.instagram.com/i_m_ktn';
+    const String instagramUrl = 'https://www.instagram.com/i_m_ktn';
     const String whatsAppUrl = 'https://wa.me/918689814110?text=Hello';
     const String twitterUrl = 'https://www.twitter.com/ketan0073';
     const String gitHubUrl = 'https://github.com/ketan-glitch';
+
     return Center(
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -83,7 +93,7 @@ class _SocialState extends State<Social> {
             ),
             onPressed: (){
               setState(() {
-                _launched=_launchInBrowser(instaGramUrl);
+                _launched=_launchInBrowser(instagramUrl);
               });
             },
           ),
@@ -108,6 +118,18 @@ class _SocialState extends State<Social> {
                 _launched=_launchInBrowser(gitHubUrl);
               });
             },
+          ),
+          IconButton(
+            onPressed: (){
+              setState(() {
+                _launched=_makePhoneCall('tel:$_phone');
+              });
+            },
+            icon: Icon(
+              Icons.phone,
+              color: Colors.blueGrey[900],
+              size: 20,
+            ),
           ),
           ],
       ),
